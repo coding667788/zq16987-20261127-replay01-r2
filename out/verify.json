@@ -1,0 +1,353 @@
+{
+  "schema": "eraseanchor.verify/v1",
+  "case_id": "root-revocation-migration",
+  "ok": true,
+  "status": "verified",
+  "action_ids": [
+    "a01-migrate-keep",
+    "a02-add-keep-envelope",
+    "a03-revoke-shared-safe"
+  ],
+  "violation_count": 0,
+  "violations": [],
+  "checks": {
+    "refs": 2,
+    "power_boundaries": 5,
+    "domain_loss_cases": 4,
+    "recovery_images": 28
+  },
+  "final_witnesses": [
+    {
+      "ref": {
+        "ref_id": "hold-1:snap-hold:/held/record.db",
+        "ticket_id": "hold-1",
+        "kind": "preserve",
+        "snapshot": "snap-hold",
+        "path": "/held/record.db"
+      },
+      "lost_domain": null,
+      "recovery_domain": null,
+      "readable": true,
+      "content_id": "rec-legal-hold",
+      "ciphertext_id": "ct-keep",
+      "ciphertext_domains": [
+        "d1",
+        "d3"
+      ],
+      "surviving_domains": [
+        "d1",
+        "d3"
+      ],
+      "complete": true,
+      "root_id": "root-keep",
+      "nodes": [
+        "root-keep",
+        "dek-keep"
+      ],
+      "envelope_path": [
+        "env-keep-alt-root"
+      ],
+      "length": 1,
+      "proof": "root-keep --env-keep-alt-root--> dek-keep"
+    },
+    {
+      "ref": {
+        "ref_id": "erase-1:snap-erase:/outbox/target.db",
+        "ticket_id": "erase-1",
+        "kind": "erase",
+        "snapshot": "snap-erase",
+        "path": "/outbox/target.db"
+      },
+      "lost_domain": null,
+      "recovery_domain": null,
+      "readable": false,
+      "content_id": "rec-crypto-erase-me",
+      "reason": "no_rooted_envelope_path_to_content_key",
+      "candidates_tried": [
+        {
+          "ciphertext_id": "ct-target",
+          "reason": "no_rooted_envelope_path_to_content_key",
+          "ciphertext_domains": [
+            "d2"
+          ],
+          "key_ids": [
+            "dek-target"
+          ],
+          "graph": {
+            "_not_found": true,
+            "reachable_nodes": [
+              "dek-keep",
+              "root-keep"
+            ],
+            "blocked_roots": [
+              {
+                "root": "root-shared",
+                "reason": "revoked"
+              }
+            ],
+            "blocked_envelopes": []
+          }
+        }
+      ]
+    }
+  ],
+  "power_boundaries": [
+    {
+      "boundary_index": 0,
+      "after_event_id": null,
+      "stage": "initial",
+      "action_id": null,
+      "all_holds_readable": true,
+      "erase_targets_readable_count": 1
+    },
+    {
+      "boundary_index": 1,
+      "after_event_id": "a01-migrate-keep:data-write",
+      "stage": "data_write",
+      "action_id": "a01-migrate-keep",
+      "all_holds_readable": true,
+      "erase_targets_readable_count": 1
+    },
+    {
+      "boundary_index": 2,
+      "after_event_id": "a01-migrate-keep:commit",
+      "stage": "commit",
+      "action_id": "a01-migrate-keep",
+      "all_holds_readable": true,
+      "erase_targets_readable_count": 1
+    },
+    {
+      "boundary_index": 3,
+      "after_event_id": "a02-add-keep-envelope:commit",
+      "stage": "commit",
+      "action_id": "a02-add-keep-envelope",
+      "all_holds_readable": true,
+      "erase_targets_readable_count": 1
+    },
+    {
+      "boundary_index": 4,
+      "after_event_id": "a03-revoke-shared-safe:commit",
+      "stage": "commit",
+      "action_id": "a03-revoke-shared-safe",
+      "all_holds_readable": true,
+      "erase_targets_readable_count": 0
+    }
+  ],
+  "domain_images": [
+    {
+      "lost_domain": "meta",
+      "image": "current-committed",
+      "violation_count": 0
+    },
+    {
+      "lost_domain": "meta",
+      "image": "merged-journal",
+      "violation_count": 0
+    },
+    {
+      "lost_domain": "meta",
+      "image": "local-image:d1",
+      "violation_count": 0
+    },
+    {
+      "lost_domain": "meta",
+      "image": "local-image:d2",
+      "violation_count": 0
+    },
+    {
+      "lost_domain": "meta",
+      "image": "local-image:d3",
+      "violation_count": 0
+    },
+    {
+      "lost_domain": "meta",
+      "image": "snapshot:snap-erase",
+      "violation_count": 0
+    },
+    {
+      "lost_domain": "meta",
+      "image": "snapshot:snap-hold",
+      "violation_count": 0
+    },
+    {
+      "lost_domain": "d1",
+      "image": "current-committed",
+      "violation_count": 0
+    },
+    {
+      "lost_domain": "d1",
+      "image": "merged-journal",
+      "violation_count": 0
+    },
+    {
+      "lost_domain": "d1",
+      "image": "local-image:meta",
+      "violation_count": 0
+    },
+    {
+      "lost_domain": "d1",
+      "image": "local-image:d2",
+      "violation_count": 0
+    },
+    {
+      "lost_domain": "d1",
+      "image": "local-image:d3",
+      "violation_count": 0
+    },
+    {
+      "lost_domain": "d1",
+      "image": "snapshot:snap-erase",
+      "violation_count": 0
+    },
+    {
+      "lost_domain": "d1",
+      "image": "snapshot:snap-hold",
+      "violation_count": 0
+    },
+    {
+      "lost_domain": "d2",
+      "image": "current-committed",
+      "violation_count": 0
+    },
+    {
+      "lost_domain": "d2",
+      "image": "merged-journal",
+      "violation_count": 0
+    },
+    {
+      "lost_domain": "d2",
+      "image": "local-image:meta",
+      "violation_count": 0
+    },
+    {
+      "lost_domain": "d2",
+      "image": "local-image:d1",
+      "violation_count": 0
+    },
+    {
+      "lost_domain": "d2",
+      "image": "local-image:d3",
+      "violation_count": 0
+    },
+    {
+      "lost_domain": "d2",
+      "image": "snapshot:snap-erase",
+      "violation_count": 0
+    },
+    {
+      "lost_domain": "d2",
+      "image": "snapshot:snap-hold",
+      "violation_count": 0
+    },
+    {
+      "lost_domain": "d3",
+      "image": "current-committed",
+      "violation_count": 0
+    },
+    {
+      "lost_domain": "d3",
+      "image": "merged-journal",
+      "violation_count": 0
+    },
+    {
+      "lost_domain": "d3",
+      "image": "local-image:meta",
+      "violation_count": 0
+    },
+    {
+      "lost_domain": "d3",
+      "image": "local-image:d1",
+      "violation_count": 0
+    },
+    {
+      "lost_domain": "d3",
+      "image": "local-image:d2",
+      "violation_count": 0
+    },
+    {
+      "lost_domain": "d3",
+      "image": "snapshot:snap-erase",
+      "violation_count": 0
+    },
+    {
+      "lost_domain": "d3",
+      "image": "snapshot:snap-hold",
+      "violation_count": 0
+    }
+  ],
+  "revocation_anchors": [
+    {
+      "lost_domain": "meta",
+      "root_id": "root-shared",
+      "revocation_id": "revocation:root-shared:a03-revoke-shared-safe",
+      "record_domains": [
+        "meta",
+        "d1",
+        "d2",
+        "d3"
+      ],
+      "survives_domain_loss": true,
+      "retained_in_all_snapshot_recoveries": true,
+      "snapshot_images": [
+        "snap-erase",
+        "snap-hold"
+      ]
+    },
+    {
+      "lost_domain": "d1",
+      "root_id": "root-shared",
+      "revocation_id": "revocation:root-shared:a03-revoke-shared-safe",
+      "record_domains": [
+        "meta",
+        "d1",
+        "d2",
+        "d3"
+      ],
+      "survives_domain_loss": true,
+      "retained_in_all_snapshot_recoveries": true,
+      "snapshot_images": [
+        "snap-erase",
+        "snap-hold"
+      ]
+    },
+    {
+      "lost_domain": "d2",
+      "root_id": "root-shared",
+      "revocation_id": "revocation:root-shared:a03-revoke-shared-safe",
+      "record_domains": [
+        "meta",
+        "d1",
+        "d2",
+        "d3"
+      ],
+      "survives_domain_loss": true,
+      "retained_in_all_snapshot_recoveries": true,
+      "snapshot_images": [
+        "snap-erase",
+        "snap-hold"
+      ]
+    },
+    {
+      "lost_domain": "d3",
+      "root_id": "root-shared",
+      "revocation_id": "revocation:root-shared:a03-revoke-shared-safe",
+      "record_domains": [
+        "meta",
+        "d1",
+        "d2",
+        "d3"
+      ],
+      "survives_domain_loss": true,
+      "retained_in_all_snapshot_recoveries": true,
+      "snapshot_images": [
+        "snap-erase",
+        "snap-hold"
+      ]
+    }
+  ],
+  "replay_cross_check": {
+    "path": ".\\out\\replay.json",
+    "replay_ok": true,
+    "status": null
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "ok": true,
+  "boundary_count": 6,
+  "boundaries": [
+    {
+      "boundary": 0,
+      "ok": true,
+      "journal_records": 5,
+      "pending_data_writes": [],
+      "immediate_all_holds_readable": true,
+      "violation_count": 0,
+      "journal_path": "out\\journals\\boundary-00.jsonl"
+    },
+    {
+      "boundary": 1,
+      "ok": true,
+      "journal_records": 7,
+      "pending_data_writes": [
+        "a01-migrate-keep"
+      ],
+      "immediate_all_holds_readable": true,
+      "violation_count": 0,
+      "journal_path": "out\\journals\\boundary-01.jsonl"
+    },
+    {
+      "boundary": 2,
+      "ok": true,
+      "journal_records": 5,
+      "pending_data_writes": [],
+      "immediate_all_holds_readable": true,
+      "violation_count": 0,
+      "journal_path": "out\\journals\\boundary-02.jsonl"
+    },
+    {
+      "boundary": 3,
+      "ok": true,
+      "journal_records": 5,
+      "pending_data_writes": [],
+      "immediate_all_holds_readable": true,
+      "violation_count": 0,
+      "journal_path": "out\\journals\\boundary-03.jsonl"
+    },
+    {
+      "boundary": 4,
+      "ok": true,
+      "journal_records": 5,
+      "pending_data_writes": [],
+      "immediate_all_holds_readable": true,
+      "violation_count": 0,
+      "journal_path": "out\\journals\\boundary-04.jsonl"
+    },
+    {
+      "boundary": 5,
+      "ok": true,
+      "journal_records": 5,
+      "pending_data_writes": [],
+      "immediate_all_holds_readable": true,
+      "violation_count": 0,
+      "journal_path": "out\\journals\\boundary-05.jsonl"
+    }
+  ],
+  "schema": "eraseanchor.replay/v1",
+  "case_id": "root-revocation-migration",
+  "action_ids": [
+    "a01-migrate-keep",
+    "a02-add-keep-envelope",
+    "a03-revoke-shared-safe"
+  ]
+}

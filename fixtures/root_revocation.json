@@ -1,0 +1,97 @@
+{
+  "schema": "eraseanchor.case/v1",
+  "case_id": "root-revocation-migration",
+  "domains": ["meta", "d1", "d2", "d3"],
+  "policy": {
+    "hold_survives_domain_loss": true,
+    "commit_domains": ["meta", "d1", "d2", "d3"],
+    "recovery_domains": ["meta", "d1", "d2", "d3"]
+  },
+  "roots": [
+    {"id": "root-shared", "domains": ["meta", "d1"], "persisted": true},
+    {"id": "root-keep", "domains": ["meta", "d2"], "persisted": true}
+  ],
+  "ciphertexts": {
+    "ct-keep": {
+      "content_id": "rec-legal-hold",
+      "key_id": "dek-keep",
+      "domains": ["d1"],
+      "complete": true
+    },
+    "ct-target": {
+      "content_id": "rec-crypto-erase-me",
+      "key_id": "dek-target",
+      "domains": ["d2"],
+      "complete": true
+    }
+  },
+  "envelopes": [
+    {
+      "id": "env-shared-kek",
+      "wrapper": "root-shared",
+      "wrapped": "kek-shared",
+      "domains": ["meta", "d1"]
+    },
+    {
+      "id": "env-keep",
+      "wrapper": "kek-shared",
+      "wrapped": "dek-keep",
+      "domains": ["meta", "d1"]
+    },
+    {
+      "id": "env-target",
+      "wrapper": "kek-shared",
+      "wrapped": "dek-target",
+      "domains": ["meta", "d1"]
+    }
+  ],
+  "snapshots": {
+    "snap-hold": {
+      "names": {"/held/record.db": "ct-keep"}
+    },
+    "snap-erase": {
+      "names": {"/outbox/target.db": "ct-target"}
+    }
+  },
+  "tickets": [
+    {"id": "hold-1", "kind": "preserve", "snapshot": "snap-hold"},
+    {"id": "erase-1", "kind": "erase", "snapshot": "snap-erase"}
+  ],
+  "actions": [
+    {
+      "id": "a01-migrate-keep",
+      "type": "migrate_ciphertext",
+      "cost": 1,
+      "ciphertext": "ct-keep",
+      "add_domains": ["d3"],
+      "record_domains": ["meta", "d1", "d2", "d3"]
+    },
+    {
+      "id": "a02-add-keep-envelope",
+      "type": "add_envelope",
+      "cost": 1,
+      "envelope_id": "env-keep-alt-root",
+      "wrapper": "root-keep",
+      "wrapped": "dek-keep",
+      "record_domains": ["meta", "d1", "d2", "d3"]
+    },
+    {
+      "id": "a03-revoke-shared-safe",
+      "type": "revoke_root",
+      "cost": 5,
+      "root_id": "root-shared",
+      "requires": ["a01-migrate-keep", "a02-add-keep-envelope"],
+      "migration_dependencies": ["a01-migrate-keep"],
+      "record_domains": ["meta", "d1", "d2", "d3"]
+    },
+    {
+      "id": "a04-revoke-shared-unsafe",
+      "type": "revoke_root",
+      "cost": 1,
+      "root_id": "root-shared",
+      "requires": ["a01-migrate-keep", "a02-add-keep-envelope"],
+      "migration_dependencies": ["a01-migrate-keep"],
+      "record_domains": ["meta"]
+    }
+  ]
+}

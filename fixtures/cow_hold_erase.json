@@ -1,0 +1,153 @@
+{
+  "schema": "eraseanchor.case/v1",
+  "case_id": "cow-dedup-hold-erase",
+  "domains": ["ctrl", "d1", "d2", "d3"],
+  "policy": {
+    "hold_survives_domain_loss": true,
+    "commit_domains": ["ctrl", "d1", "d2", "d3"],
+    "recovery_domains": ["ctrl", "d1", "d2", "d3"]
+  },
+  "roots": [
+    {"id": "root-old", "domains": ["ctrl", "d1"], "persisted": true},
+    {"id": "root-hold", "domains": ["ctrl", "d2"], "persisted": true}
+  ],
+  "ciphertexts": {
+    "ct-accounts": {
+      "content_id": "rec-accounts-2024",
+      "key_id": "dek-accounts",
+      "domains": ["d2"],
+      "complete": true
+    },
+    "ct-temp": {
+      "content_id": "rec-temp-export",
+      "key_id": "dek-temp",
+      "domains": ["d3"],
+      "complete": true
+    },
+    "ct-stale": {
+      "content_id": "rec-stale",
+      "key_id": "dek-stale",
+      "domains": ["d1"],
+      "complete": true
+    }
+  },
+  "envelopes": [
+    {
+      "id": "env-root-kek-old",
+      "wrapper": "root-old",
+      "wrapped": "kek-old",
+      "domains": ["ctrl", "d1"]
+    },
+    {
+      "id": "env-kek-accounts",
+      "wrapper": "kek-old",
+      "wrapped": "dek-accounts",
+      "domains": ["ctrl", "d1"]
+    },
+    {
+      "id": "env-kek-temp",
+      "wrapper": "kek-old",
+      "wrapped": "dek-temp",
+      "domains": ["ctrl", "d1"]
+    },
+    {
+      "id": "env-kek-stale",
+      "wrapper": "kek-old",
+      "wrapped": "dek-stale",
+      "domains": ["ctrl", "d1"]
+    }
+  ],
+  "snapshots": {
+    "snap-base": {
+      "names": {
+        "/accounts.dat": "ct-accounts"
+      }
+    },
+    "snap-weekly": {
+      "parent": "snap-base",
+      "names": {
+        "/stale.log": "ct-stale"
+      }
+    },
+    "snap-daily": {
+      "parent": "snap-weekly",
+      "names": {
+        "/temp.log": "ct-temp",
+        "/stale.log": null
+      }
+    },
+    "snap-current": {
+      "parent": "snap-daily",
+      "names": {
+        "/temp.log": null
+      }
+    }
+  },
+  "tickets": [
+    {
+      "id": "hold-accounts",
+      "kind": "preserve",
+      "snapshot": "snap-weekly",
+      "paths": ["/accounts.dat"]
+    },
+    {
+      "id": "erase-temp-daily",
+      "kind": "erase",
+      "snapshot": "snap-daily",
+      "paths": ["/temp.log"]
+    }
+  ],
+  "actions": [
+    {
+      "id": "a01-migrate-accounts",
+      "type": "migrate_ciphertext",
+      "cost": 2,
+      "ciphertext": "ct-accounts",
+      "add_domains": ["d3"],
+      "record_domains": ["ctrl", "d1", "d2", "d3"]
+    },
+    {
+      "id": "a02-add-hold-envelope",
+      "type": "add_envelope",
+      "cost": 1,
+      "envelope_id": "env-hold-accounts",
+      "wrapper": "root-hold",
+      "wrapped": "dek-accounts",
+      "record_domains": ["ctrl", "d1", "d2", "d3"]
+    },
+    {
+      "id": "a03-delete-temp-safe",
+      "type": "delete_envelope",
+      "cost": 3,
+      "envelope_id": "env-kek-temp",
+      "persistent_anchor": true,
+      "record_domains": ["ctrl", "d1", "d2", "d3"]
+    },
+    {
+      "id": "a04-delete-temp-unsafe",
+      "type": "delete_envelope",
+      "cost": 1,
+      "envelope_id": "env-kek-temp",
+      "persistent_anchor": false,
+      "record_domains": ["d1"]
+    },
+    {
+      "id": "a05-revoke-old-safe",
+      "type": "revoke_root",
+      "cost": 7,
+      "root_id": "root-old",
+      "requires": ["a01-migrate-accounts", "a02-add-hold-envelope"],
+      "migration_dependencies": ["a01-migrate-accounts"],
+      "record_domains": ["ctrl", "d1", "d2", "d3"]
+    },
+    {
+      "id": "a06-revoke-old-unsafe",
+      "type": "revoke_root",
+      "cost": 4,
+      "root_id": "root-old",
+      "requires": ["a01-migrate-accounts", "a02-add-hold-envelope"],
+      "migration_dependencies": ["a01-migrate-accounts"],
+      "record_domains": ["ctrl"]
+    }
+  ]
+}

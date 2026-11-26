@@ -1,0 +1,78 @@
+{
+  "schema": "eraseanchor.case/v1",
+  "case_id": "shared-dedup-conflict",
+  "domains": ["d0", "d1"],
+  "policy": {
+    "hold_survives_domain_loss": false,
+    "commit_domains": ["d0", "d1"],
+    "recovery_domains": ["d0", "d1"]
+  },
+  "roots": [
+    {"id": "root-a", "domains": ["d0", "d1"], "persisted": true},
+    {"id": "root-b", "domains": ["d0", "d1"], "persisted": true}
+  ],
+  "ciphertexts": {
+    "ct-shared": {
+      "content_id": "same-logical-record-9",
+      "key_id": "dek-shared",
+      "domains": ["d0", "d1"],
+      "complete": true
+    }
+  },
+  "envelopes": [
+    {
+      "id": "env-root-shared",
+      "wrapper": "root-a",
+      "wrapped": "dek-shared",
+      "domains": ["d0", "d1"]
+    }
+  ],
+  "snapshots": {
+    "snap-hold": {
+      "names": {"/shared/record.bin": "ct-shared"}
+    },
+    "snap-erase": {
+      "parent": "snap-hold",
+      "names": {"/scratch/copy-name.bin": "ct-shared"}
+    },
+    "snap-current-deleted-name": {
+      "parent": "snap-erase",
+      "names": {"/scratch/copy-name.bin": null}
+    }
+  },
+  "tickets": [
+    {"id": "legal-hold-shared", "kind": "preserve", "snapshot": "snap-hold"},
+    {
+      "id": "erase-shared-copy",
+      "kind": "erase",
+      "snapshot": "snap-erase",
+      "paths": ["/scratch/copy-name.bin"]
+    }
+  ],
+  "actions": [
+    {
+      "id": "a01-add-root-b-envelope",
+      "type": "add_envelope",
+      "cost": 1,
+      "envelope_id": "env-root-b-shared",
+      "wrapper": "root-b",
+      "wrapped": "dek-shared",
+      "record_domains": ["d0", "d1"]
+    },
+    {
+      "id": "a02-delete-root-a-envelope",
+      "type": "delete_envelope",
+      "cost": 2,
+      "envelope_id": "env-root-shared",
+      "persistent_anchor": true,
+      "record_domains": ["d0", "d1"]
+    },
+    {
+      "id": "a03-revoke-root-a",
+      "type": "revoke_root",
+      "cost": 4,
+      "root_id": "root-a",
+      "record_domains": ["d0", "d1"]
+    }
+  ]
+}

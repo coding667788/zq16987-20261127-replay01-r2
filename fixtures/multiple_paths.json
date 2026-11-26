@@ -1,0 +1,107 @@
+{
+  "schema": "eraseanchor.case/v1",
+  "case_id": "multiple-envelope-paths",
+  "domains": ["d0", "d1"],
+  "policy": {
+    "hold_survives_domain_loss": false,
+    "commit_domains": ["d0", "d1"],
+    "recovery_domains": ["d0", "d1"]
+  },
+  "roots": [
+    {"id": "root-a", "domains": ["d0", "d1"], "persisted": true},
+    {"id": "root-b", "domains": ["d0", "d1"], "persisted": true},
+    {"id": "root-hold", "domains": ["d0", "d1"], "persisted": true}
+  ],
+  "ciphertexts": {
+    "ct-multi": {
+      "content_id": "rec-multi-path",
+      "key_id": "dek-multi",
+      "domains": ["d0", "d1"],
+      "complete": true
+    },
+    "ct-hold": {
+      "content_id": "rec-unrelated-hold",
+      "key_id": "dek-hold",
+      "domains": ["d0", "d1"],
+      "complete": true
+    }
+  },
+  "envelopes": [
+    {
+      "id": "env-path-a",
+      "wrapper": "root-a",
+      "wrapped": "dek-multi",
+      "domains": ["d0", "d1"]
+    },
+    {
+      "id": "env-path-b-kek",
+      "wrapper": "root-b",
+      "wrapped": "kek-b",
+      "domains": ["d0", "d1"]
+    },
+    {
+      "id": "env-path-b-dek",
+      "wrapper": "kek-b",
+      "wrapped": "dek-multi",
+      "domains": ["d0", "d1"]
+    },
+    {
+      "id": "env-hold",
+      "wrapper": "root-hold",
+      "wrapped": "dek-hold",
+      "domains": ["d0", "d1"]
+    }
+  ],
+  "snapshots": {
+    "snap": {
+      "names": {
+        "/erase/multi.bin": "ct-multi",
+        "/hold/keep.bin": "ct-hold"
+      }
+    }
+  },
+  "tickets": [
+    {"id": "erase-multi", "kind": "erase", "snapshot": "snap", "paths": ["/erase/multi.bin"]},
+    {"id": "hold-one", "kind": "preserve", "snapshot": "snap", "paths": ["/hold/keep.bin"]}
+  ],
+  "actions": [
+    {
+      "id": "a01-delete-path-a",
+      "type": "delete_envelope",
+      "cost": 1,
+      "envelope_id": "env-path-a",
+      "persistent_anchor": true,
+      "record_domains": ["d0", "d1"]
+    },
+    {
+      "id": "a02-delete-path-b-dek",
+      "type": "delete_envelope",
+      "cost": 1,
+      "envelope_id": "env-path-b-dek",
+      "persistent_anchor": true,
+      "record_domains": ["d0", "d1"]
+    },
+    {
+      "id": "a03-delete-only-b-kek",
+      "type": "delete_envelope",
+      "cost": 1,
+      "envelope_id": "env-path-b-kek",
+      "persistent_anchor": true,
+      "record_domains": ["d0", "d1"]
+    },
+    {
+      "id": "a04-revoke-root-a",
+      "type": "revoke_root",
+      "cost": 5,
+      "root_id": "root-a",
+      "record_domains": ["d0", "d1"]
+    },
+    {
+      "id": "a05-revoke-root-b",
+      "type": "revoke_root",
+      "cost": 5,
+      "root_id": "root-b",
+      "record_domains": ["d0", "d1"]
+    }
+  ]
+}

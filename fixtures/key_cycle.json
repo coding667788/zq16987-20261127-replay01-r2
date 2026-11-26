@@ -1,0 +1,57 @@
+{
+  "schema": "eraseanchor.case/v1",
+  "case_id": "envelope-cycles",
+  "domains": ["d0"],
+  "policy": {
+    "hold_survives_domain_loss": false,
+    "commit_domains": ["d0"],
+    "recovery_domains": ["d0"]
+  },
+  "roots": [
+    {"id": "root-entry", "domains": ["*"], "persisted": true}
+  ],
+  "ciphertexts": {
+    "ct-cycle-reachable": {
+      "content_id": "content-cycle-reachable",
+      "key_id": "key-b",
+      "domains": ["*"],
+      "complete": true
+    },
+    "ct-isolated-cycle": {
+      "content_id": "content-isolated-cycle",
+      "key_id": "key-y",
+      "domains": ["*"],
+      "complete": true
+    }
+  },
+  "envelopes": [
+    {"id": "env-root-a", "wrapper": "root-entry", "wrapped": "key-a", "domains": ["*"]},
+    {"id": "env-a-b", "wrapper": "key-a", "wrapped": "key-b", "domains": ["*"]},
+    {"id": "env-b-a", "wrapper": "key-b", "wrapped": "key-a", "domains": ["*"]},
+    {"id": "env-x-y", "wrapper": "key-x", "wrapped": "key-y", "domains": ["*"]},
+    {"id": "env-y-x", "wrapper": "key-y", "wrapped": "key-x", "domains": ["*"]}
+  ],
+  "snapshots": {
+    "snap-cycle": {
+      "names": {
+        "/reachable-cycle.bin": "ct-cycle-reachable",
+        "/isolated-cycle.bin": "ct-isolated-cycle"
+      }
+    }
+  },
+  "tickets": [
+    {
+      "id": "hold-reachable",
+      "kind": "preserve",
+      "snapshot": "snap-cycle",
+      "paths": ["/reachable-cycle.bin"]
+    },
+    {
+      "id": "erase-isolated",
+      "kind": "erase",
+      "snapshot": "snap-cycle",
+      "paths": ["/isolated-cycle.bin"]
+    }
+  ],
+  "actions": []
+}

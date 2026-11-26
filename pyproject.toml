@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "eraseanchor"
+version = "1.0.0"
+description = "Synthetic crypto-erasure planner, append-transaction replay and verifier"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "Proprietary" }
+authors = [{ name = "eraseanchor" }]
+dependencies = []
+
+[project.scripts]
+eraseanchor = "eraseanchor.cli:main"
+
+[tool.setuptools]
+packages = ["eraseanchor"]
